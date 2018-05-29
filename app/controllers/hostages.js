@@ -1,7 +1,9 @@
 let Hostage = require('../models/hostage');
+let jwt = require('jsonwebtoken');
 
 module.exports.getHostages = function(req,res){
     let promise = Hostage.find().populate('bandit');
+    // console.log(payload);
     if(req.query.min_age){
         let min_age = req.query.min_age;
         promise = promise.find({age : {'$gte':min_age}});
@@ -10,6 +12,10 @@ module.exports.getHostages = function(req,res){
         let max_age = req.query.max_age;
         promise = promise.find({age : {'$lte': max_age}});
     }    
+
+    let payload = jwt.decode(req.query.token);    
+    promise = promise.find({'bandit': payload.id});
+
     promise.then(
         function(hostages){
             res.json(hostages);

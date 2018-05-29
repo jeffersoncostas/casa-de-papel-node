@@ -9,6 +9,14 @@ module.exports = function(){
         fake_name :{
             type: String,
             required: true
+        },
+        email:{
+            type: String,
+            required: true
+        },
+        password: {
+            type: String,
+            required: true
         }
     });
     return mongoose.model('Bandit', schema);

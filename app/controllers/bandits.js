@@ -1,3 +1,5 @@
+let bcrypt = require('bcrypt');
+
 let Bandit = require('../models/bandit');
 let Hostage = require('../models/hostage');
 
@@ -15,10 +17,22 @@ module.exports.getBandits = function(req,res){
 }
 
 module.exports.insertBandit = function(req, res){
-    let promise = Bandit.create(req.body);
+    console.log(req.body);
+    let bandit = new Bandit({
+        real_name: req.body.real_name,
+        fake_name: req.body.fake_name,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 10)
+    });
+    let promise = Bandit.create(bandit);
     promise.then(
         function(bandit){
-            res.status(201).json(bandit);
+            res.status(201).json({
+                id: bandit._id,
+                real_name: bandit.real_name,
+                fake_name: bandit.fake_name,
+                email: bandit.email
+            });
         }
     ).catch(
         function(error){
